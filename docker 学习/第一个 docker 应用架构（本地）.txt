@@ -1,0 +1,19 @@
+#创建redis-master容器 并启动redis服务
+docker run -it --name redis-master -p 6379:6379 -v D:\docker-conf\redis\conf\redis-master.conf:/redis/redis-master.conf -v D:\docker-conf\redis\data\master-data:/data -d  redis redis-server /redis/redis-master.conf 
+
+#创建redis-slave1容器 并启动redis服务
+docker run -it --name redis-slave1 --link redis-master:redis-master -p 6380:6379 -v D:\docker-conf\redis\conf\redis-slave1.conf:/redis/redis-slave1.conf -v D:\docker-conf\redis\data\slave1-data:/data -d  redis  redis-server /redis/redis-slave1.conf
+
+#创建redis-slave2容器 并启动redis服务
+docker run -it --name redis-slave2 --link redis-master:redis-master -p 6381:6379 -v D:\docker-conf\redis\conf\redis-slave2.conf:/redis/redis-slave2.conf -v D:\docker-conf\redis\data\slave2-data:/data -d  redis  redis-server /redis/redis-slave2.conf
+
+
+#应用web1
+docker run -it --name xiajun_web --link redis-master:redis -p 6382:80 -d xiajun_web /bin/bash
+#两个相同应用（与第一个应用不同）
+docker run -it --name webapp1 --link redis-master:redis -p 6383:80 -d  oopxiajunstudydocker1:base /bin/bash
+docker run -it --name webapp2 --link redis-master:redis -p 6384:80 -d  oopxiajunstudydocker1:base /bin/bash
+
+#创建一个nginx 代理（将webapp1，webapp2，xiajun_web 反向代理在一个域名下）
+docker run -it --name my_nginx --link webapp1:webapp1 --link webapp2:webapp2 --link xiajun_web:xiajun_web -v D:\docker-conf\nginx\conf.d\default.conf:/etc/nginx/conf.d/default.conf -v D:\docker-conf\nginx\nginx.conf:/etc/nginx/nginx.conf -p 6999:80 -d nginx  /bin/bash
+

@@ -2,3 +2,4 @@ docker attach 容器id       （进入正在运行的容器，直接exit 容器会停止运行，需要Ct
 
 docker exec -it 容器id/容器名  /bin/bash   (进入正在运行的容器，直接exit容器不会停止运行)
 
+

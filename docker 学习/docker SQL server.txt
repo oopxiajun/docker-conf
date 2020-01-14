@@ -1,0 +1,15 @@
+拉取镜像
+docker pull mcr.microsoft.com/mssql/server
+
+运行容器
+docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=user@pwd" -p 1433:1433 --name sqls1 -d mcr.microsoft.com/mssql/server
+
+
+进入容器
+docker exec -it 8f3d9ec4068f bash
+
+登录
+/opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P "user@pwd"
+
+远程登录
+sqlcmd -S ip,port -U SA -P "user@pwd"

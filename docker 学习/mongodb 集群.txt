@@ -1,0 +1,46 @@
+运行节点
+ 2082  docker run -d --name configsvr3 -p 27017:27017  mongo  --replSet “rs_test” --bind_ip_all
+ 2083  docker run -d --name configsvr2 -p 27016:27017  mongo  --replSet “rs_test” --bind_ip_all
+ 2084  docker run -d --name configsvr1 -p 27015:27017  mongo  --replSet “rs_test” --bind_ip_all
+
+查看每个容器的ip地址
+docker inspect 容器id| grep Address
+
+进入主节点容器
+docker exec -it 容器id /bin/bash
+
+进入主节点的服务
+mongo -port 27017
+
+加载集群设置
+rs.initiate()
+var config = {
+"_id":"rs_test",
+members:[
+{"_id":0,host:"192.168.134.128:27015"},
+{"_id":1,host:"192.168.134.128:27016"},
+{"_id":2,host:"192.168.134.128:27017"}]
+}
+添加从节点
+rs.add("ip:27018")
+rs.add("ip:27019")
+
+
+查看集群状态
+rs.status()
+
+
+{
+			"_id" : 2,
+			"host" : "192.168.134.128:27017",
+			"arbiterOnly" : false,
+			"buildIndexes" : true,
+			"hidden" : false,
+			"priority" : 1,
+			"tags" : {
+				
+			},
+			"slaveDelay" : NumberLong(0),
+			"votes" : 1
+		}
+
